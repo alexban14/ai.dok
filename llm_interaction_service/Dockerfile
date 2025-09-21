@@ -56,7 +56,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libsm6 \
     libxext6 \
     libxrender1 \
-    # Utils
+    libgomp1 \
+    # Utils\
     curl \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
@@ -78,12 +79,6 @@ RUN pip install --no-cache-dir uvicorn gunicorn
 
 # Copy application
 COPY --chown=app:app ./app /app/app
-# Copy .env locally
-COPY --chown=app:app ./app/.env /app/app
-# Copy the .env file from a build secret
-#RUN --mount=type=secret,id=llm-env,dst=/tmp/.env \
-#    cp /tmp/.env /app/.env && \
-#    chown app:app /app/.env
 COPY --chown=app:app ./.docker/entrypoint.sh /app/entrypoint.sh
 
 RUN chmod +x /app/entrypoint.sh

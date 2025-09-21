@@ -10,15 +10,14 @@ from app.core.constants import AIService
 from app.core.constants import OCRService
 from app.core.constants import ModelName
 from app.core.middleware import authorize_client
+from app.factories.parse_file_service_factory import ParseFileServiceFactory
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
 
 # Dependency to provide LlmInteractionService
 def get_llm_interaction_service() -> ParseFileService:
-    ollama_base_url = config.ollama_base_url
-    groq_api_key = config.groq_api_key
-    return ParseFileService(ollama_base_url=ollama_base_url, groq_api_key=groq_api_key)
+    return ParseFileServiceFactory.create_parse_file_service()
 
 @router.post("/process-file")
 async def process_rcp(
@@ -55,6 +54,10 @@ async def process_rcp(
 
     except HTTPException:
         # Re-raise HTTP exceptions
+        raise
+    except Exception as e:
+        logger.error(f"File processing error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error processing file: {str(e)}")
         raise
     except Exception as e:
         logger.error(f"File processing error: {str(e)}")

@@ -4,6 +4,7 @@ from app.core.middleware import setup_cors
 import logging
 from app.api.endpoints import hello
 from app.api.endpoints.interaction import process_file
+from app.api.endpoints import indexing
 
 
 def create_api():
@@ -20,5 +21,6 @@ def create_api():
     # llm interaction endpoints
     llmInteractionPrefix = '/llm-interaction-api/v1'
     api.include_router(process_file.router, prefix=llmInteractionPrefix, tags=['LLmInteractionApi', 'LlmProcessFile'])
+    api.include_router(indexing.router, prefix='/indexing', tags=['Indexing'])
 
     return api

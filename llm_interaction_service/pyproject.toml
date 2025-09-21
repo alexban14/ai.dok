@@ -25,10 +25,13 @@ langchain-text-splitters = "*"
 langchain-unstructured = "*"
 chromadb = "*"
 langchain-chroma = "*"
+chromadb-client = "*"
 langchain-groq = "*"
 transformers = "*"
 sentence-transformers = "*"
 unstructured = "^0.15.8"
+b2sdk = "*"
+# unstructured = { version = "*", extras = ["pdf", "all"] }
 paddleocr = "^2.7.0.3"
 paddlepaddle = { version = "^2.5.2", platform = "linux" }  # Linux is recommended for production
 shapely = "^2.0.2"  # Required by PaddleOCR

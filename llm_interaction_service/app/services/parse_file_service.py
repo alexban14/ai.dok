@@ -19,6 +19,13 @@ logger = logging.getLogger(__name__)
 
 class ParseFileService(ParseFileServiceInterface):
     def __init__(self, ollama_base_url: str = "http://llm_host_service:11434", groq_api_key: str = None):
+        """
+        Initialize the ParseFileService class
+
+        Args:
+            ollama_base_url (str): Base URL for Ollama service.
+            groq_api_key (str, optional): API key for Groq service.
+        """
         self._llm_service = None
         self.pdf_to_image_service = PDFToImageServiceFactory.create_pdf_to_image_service(
             service_name=PDFToImageService.PYMUPDF_OPENCV_PILLOW
@@ -28,90 +35,104 @@ class ParseFileService(ParseFileServiceInterface):
         self.groq_api_key = groq_api_key
 
     async def extract_text_from_pdf(self, pdf_bytes: bytes) -> str:
+        """Extract text from a PDF using PyMuPDF."""
         try:
             doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+            # TODO: DELETE
+            logger.info(f"ParseFileService - opened stream of bytes")
+
             extracted_text = "\n".join([page.get_text("text") for page in doc])
             extracted_text = extracted_text.strip()
+
+            # TODO: DELETE
+            logger.info(f"ParseFileService - Length of extracted text: {len(extracted_text)}")
+
             if len(extracted_text) < 50:
                 return "__SCANNED_DOCUMENT__"
+
             return extracted_text
         except Exception as e:
             logger.error(f"Failed to extract text from PDF: {e}")
             raise HTTPException(status_code=500, detail="Error extracting text from PDF.")
 
     async def process_with_ocr(self, pdf_bytes: bytes) -> str:
+        """Process a scanned PDF using OCR."""
         logger.info("Converting PDF to images for OCR processing")
         images = await self.pdf_to_image_service.convert_pdf_to_images(pdf_bytes, enhance=True)
+
         if not images:
             raise HTTPException(status_code=500, detail="Failed to convert PDF to images")
 
         logger.info(f"Starting OCR processing on {len(images)} images")
         extracted_text = await self._ocr_service.extract_text_from_multiple_images(images)
+
         if not extracted_text:
             logger.warning("OCR processing completed but no text was extracted")
             raise HTTPException(
                 status_code=400,
                 detail="The document appears to be blank or OCR could not extract text"
             )
+
         logger.info(f"OCR processing completed. Extracted {len(extracted_text)} characters.")
         return extracted_text
 
     def _create_parse_prompt(self, extracted_text: str) -> Dict[str, str]:
         context = f"""
-        RCP text data:
-        {extracted_text}
+            RCP text data:
+            {extracted_text}
         """
         user_input = """
-        Extract and structure data from the provided RCP text. The goal is to identify key information for a medical professional. 
-        The returned data should be of type JSON blob.
-        The JSON must have the following structure:
-        {{
-            "drug_name": "<drug_name>",
-            "interactions": "<Text from section 4.5...>",
-            "adverse_reactions": "<Text from section 4.8...>",
-            "pregnancy_lactation": "<Text from section 4.6...>"
-        }}
+            Extract and structure data from the provided RCP text. The goal is to identify key information for a medical professional. 
+            The returned data should be of type JSON blob.
+            The JSON must have the following structure:
+            {{
+                "drug_name": "<drug_name>",
+                "interactions": "<Text from section 4.5...>",
+                "adverse_reactions": "<Text from section 4.8...>",
+                "pregnancy_lactation": "<Text from section 4.6...>"
+            }}
         """
+
         return {"system": context, "user": user_input}
 
     def _create_custom_prompt(self, extracted_text: str, user_prompt: str) -> Dict[str, str]:
+        """Create a custom prompt based on user input."""
         system = f"""
-        System:
+            System:
 
-        You are an AI medical assistant. Your role is to provide concise and accurate information to doctors based on official medical documents (RCPs).
-        Analyze the provided text from the RCP document to answer the user's question.
-        The returned data should be of type JSON blob. The JSON must have a single key called "response", under that key,
-        the value should be a string representing html format so that it can be displayed in a web app using "innerHTML".
+            You are an AI medical assistant. Your role is to provide concise and accurate information to doctors based on official medical documents (RCPs).
+            Analyze the provided text from the RCP document to answer the user's question.
+            The returned data should be of type JSON blob. The JSON must have a single key called "response", under that key,
+            the value should be a string representing html format so that it can be displayed in a web app using "innerHTML".
 
-        File Context:
-        {extracted_text}
+            File Context:
+            {extracted_text}
         """
         user = f"""
-        User Prompt: {user_prompt}"""
+            User Prompt: {user_prompt}
+        """
+
         return {"system": system, "user": user}
 
     async def _process_with_rag(self, extracted_text: str, prompt: str, model: str) -> str:
+        """Process file with RAG approach (for Groq service)."""
         try:
-            embeddings = SentenceTransformerEmbeddings()
-            vectorstore = Chroma(embedding_function=embeddings)
-            text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
-            chunks = text_splitter.split_text(extracted_text)
-            vectorstore.add_texts(chunks)
+            retrieved_docs = self.vector_store_service.similarity_search(prompt, k=5)
+            retrieved_text = "\n".join([doc.page_content for doc in retrieved_docs])
 
-            retrieved_docs = vectorstore.similarity_search(prompt, k=5)
-            relevant_text = "\n".join([doc.page_content for doc in retrieved_docs])
+            combined_context = f"""Uploaded file content:\n{extracted_text}\n\nRetrieved additional context from knowledge base:\n{retrieved_text}"""
 
-            prompt = self._create_custom_prompt(relevant_text, prompt)
+            prompt_for_llm = self._create_custom_prompt(combined_context, prompt)
 
             result = ""
             async for chunk in self._llm_service.generate_completion(
                     model=model,
-                    prompt=(prompt),
+                    prompt=prompt_for_llm,
                     stream=False
             ):
                 result += chunk["response"]
 
-            cleaned_text = re.sub(r'''^```json\n|\n"'```$'''', "", result).strip()
+            cleaned_text = re.sub(r"""^```json\n|\n"'```$""""", "", result).strip()
 
             try:
                 return json.loads(cleaned_text)
@@ -148,10 +169,13 @@ class ParseFileService(ParseFileServiceInterface):
 
         if processing_type == ProcessingType.PARSE:
             parse_prompt = self._create_parse_prompt(extracted_text)
+
             result = ""
             async for chunk in self._llm_service.generate_completion(model=model, prompt=parse_prompt, stream=False):
                 result += chunk["response"]
-            cleaned_text = re.sub(r'''^```json\n|\n"'```$'''', "", result).strip()
+
+            cleaned_text = re.sub(r"""^```json\n|\n"'```$""""", "", result).strip()
+
             try:
                 return json.loads(cleaned_text)
             except json.JSONDecodeError as e:
@@ -165,10 +189,13 @@ class ParseFileService(ParseFileServiceInterface):
                 return await self._process_with_rag(extracted_text, prompt, model)
 
             custom_prompt = self._create_custom_prompt(extracted_text, prompt)
+
             results = ""
             async for chunk in self._llm_service.generate_completion(model=model, prompt=custom_prompt, stream=False):
                 results += chunk
-            cleaned_text = re.sub(r'''^```json\n|\n"'```$'''', "", results).strip()
+
+            cleaned_text = re.sub(r"""^```json\n|\n"'```$""""", "", results).strip()
+
             try:
                 return json.loads(cleaned_text)
             except json.JSONDecodeError as e:
