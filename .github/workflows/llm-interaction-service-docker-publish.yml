@@ -1,0 +1,44 @@
+name: Docker Image CI for LLM Interaction Service
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'llm_interaction_service/**'
+      - '.github/workflows/llm-interaction-service-docker-publish.yml'
+  pull_request:
+    branches: [ "main"2 ]
+    paths:
+      - 'llm_interaction_service/**'
+      - '.github/workflows/llm-interaction-service-docker-publish.yml'
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v4
+      -
+        name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ secrets.GHCR_USERNAME }}
+          password: ${{ secrets.GHCR_PAT }}
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      -
+        name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: ./llm_interaction_service
+          file: ./llm_interaction_service/Dockerfile
+          push: true
+          tags: ${{ secrets.GHCR_USERNAME }}/ai-dok-llm-interaction-service:latest
+          secrets: |
+            llm-env=${{ secrets.LLM_PROD_ENV }}

@@ -1,0 +1,49 @@
+[tool.poetry]
+name = "ai-dok"
+version = "0.1.0"
+description = ""
+authors = ["Alex Ban <alexbanut10@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = ">=3.11,<3.13"
+python-multipart = "*"
+fastapi = "^0.100.0"
+uvicorn = "^0.23.0"
+requests = "^2.31.0"
+python-dotenv = "1.1.0"
+pydantic-settings = "^2.0"
+httpx = "^0.28.0"
+libmagic = "^1.0"
+pymupdf = "^1.23.6"
+Pillow = "^10.0.0"
+numpy = ">=1.26.4, <2.0.0"
+opencv-python = "^4.11.0"
+langchain = "*"
+langchain-community = "*"
+langchain-ollama = "*"
+langchain-text-splitters = "*"
+langchain-unstructured = "*"
+chromadb = "*"
+langchain-chroma = "*"
+langchain-groq = "*"
+transformers = "*"
+sentence-transformers = "*"
+unstructured = "^0.15.8"
+paddleocr = "^2.7.0.3"
+paddlepaddle = { version = "^2.5.2", platform = "linux" }  # Linux is recommended for production
+shapely = "^2.0.2"  # Required by PaddleOCR
+pyclipper = "^1.3.0.post4"  # Required by PaddleOCR
+scikit-image = "^0.22.0"  # Required by PaddleOCR
+lmdb = "^1.4.1"  # Required by PaddleOCR
+tqdm = "^4.66.4"  # Required by PaddleOCR
+rapidfuzz = "^3.6.1"  # Required by PaddleOCR
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.4"
+pre-commit = "^4.0.1"
+tox = "^4.23.0"
+pytest-cov = "^6.0.0"
+
+[build-system]
+requires = ["poetry>=1.6"]
+build-backend = "poetry.core.masonry.api"

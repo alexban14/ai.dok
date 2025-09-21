@@ -1,0 +1,41 @@
+name: ai-dok
+services:
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file:
+      - ./client/.env
+    ports:
+      - "9762:5173"
+    depends_on:
+      - llm_interaction_service
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    networks:
+      - ai_dok_network
+
+  llm_interaction_service:
+    hostname: llm_interaction_service
+    build:
+      context: ./llm_interaction_service
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "9322:8000"
+    volumes:
+      - "./llm_interaction_service/app:/app/app"
+      - llm_interaction_data:/home/app/.paddleocr
+    environment:
+      - ENV=${APP_ENV}
+    networks:
+      - ai_dok_network
+
+volumes:
+  llm_interaction_data:
+
+networks:
+  ai_dok_network:
+    driver: bridge
