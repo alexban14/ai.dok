@@ -32,3 +32,6 @@ class BucketProvider(str, Enum):
 
 class VectorStoreProvider(str, Enum):
     CHROMA = "chroma"
+
+class ChromaCollection(str, Enum):
+    RCP_DOCUMENTS = "rcp_documents"

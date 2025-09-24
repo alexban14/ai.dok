@@ -14,3 +14,13 @@ class VectorStoreServiceInterface(ABC):
     def similarity_search(self, query: str, k: int) -> List[Document]:
         """Search for similar texts in the vector store."""
         pass
+
+    @abstractmethod
+    def get_collection(self, collection_name: str) -> dict:
+        """Get all texts from a collection."""
+        pass
+
+    @abstractmethod
+    def delete_collection(self, collection_name: str) -> None:
+        """Delete all texts from a collection."""
+        pass

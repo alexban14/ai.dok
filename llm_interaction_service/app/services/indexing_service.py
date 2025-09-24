@@ -42,7 +42,6 @@ class IndexingService(IndexingServiceInterface):
                 logger.debug(f"Downloading {file_info.file_name}...")
                 pdf_bytes = self.bucket_service.download_file_by_name(file_info.file_name)
                 logger.debug(f"Type of pdf_bytes: {type(pdf_bytes)}")
-                # pdf_bytes = file_download.read()
                 logger.debug(f"Downloaded {len(pdf_bytes)} bytes.")
 
                 # 2. Extract text from PDF (with OCR fallback)
@@ -62,9 +61,11 @@ class IndexingService(IndexingServiceInterface):
 
                 # 4. Vectorize and store the chunks
                 logger.debug(f"Vectorizing and storing chunks for {file_info.file_name}...")
+                ids = [f"{file_info.file_name}-{i}" for i, _ in enumerate(chunks)]
                 self.vector_store_service.add_texts(
                     texts=chunks,
-                    metadatas=[{"source": file_info.file_name}] * len(chunks)
+                    metadatas=[{"source": file_info.file_name}] * len(chunks),
+                    ids=ids
                 )
 
                 logger.info(f"Successfully processed and stored {file_info.file_name}.")
