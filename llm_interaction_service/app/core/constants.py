@@ -26,3 +26,12 @@ class ModelName(str, Enum):
     # Groq models
     MIXTRAL_8X7B = "mixtral-8x7b-32768"
     LLAMA2_70B = "llama-3.3-70b-versatile"
+
+class BucketProvider(str, Enum):
+    B2 = "b2"
+
+class VectorStoreProvider(str, Enum):
+    CHROMA = "chroma"
+
+class ChromaCollection(str, Enum):
+    RCP_DOCUMENTS = "rcp_documents"
