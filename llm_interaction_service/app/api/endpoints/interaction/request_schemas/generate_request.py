@@ -1,6 +1,7 @@
 from pydantic import BaseModel
+from fastapi import Form
 
 class GenerateRequest(BaseModel):
-	model: str
-	prompt: str
-	stream: bool = False
+    model: str = Form(...)
+    prompt: str = Form(None)
+    stream: bool =Form(False)

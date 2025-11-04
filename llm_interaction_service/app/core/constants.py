@@ -22,6 +22,7 @@ class ModelName(str, Enum):
     """Enum for supported model names"""
     # Ollama models
     LLAMA2 = "llama2"
+    LLAMA33 = "llama-3.3-70b-versatile"
     MISTRAL = "mistral"
     # Groq models
     MIXTRAL_8X7B = "mixtral-8x7b-32768"
