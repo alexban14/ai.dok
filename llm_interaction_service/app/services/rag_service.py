@@ -70,10 +70,23 @@ class RagService(RagServiceInterface):
             logger.debug(f" \n -------- \n LLM cleaned response: {cleaned_text} \n -------- \n ")
 
             try:
-                return json.loads(cleaned_text)
+                llm_response = json.loads(cleaned_text)
             except json.JSONDecodeError:
                 logger.warning("LLM response is not a valid JSON. Returning as string.")
-                return {"response": cleaned_text}
+                llm_response = {"response": cleaned_text}
+
+            # Convert Document objects to a JSON-serializable format
+            retrieved_documents_serializable = [
+                {
+                    "page_content": doc.page_content,
+                    "metadata": doc.metadata
+                } for doc in retrieved_docs
+            ]
+
+            # Add retrieved documents to the response
+            llm_response['retrieved_documents'] = retrieved_documents_serializable
+
+            return llm_response
 
         except Exception as e:
             logger.error(f"Error during RAG query: {e}")
