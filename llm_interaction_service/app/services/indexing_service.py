@@ -1,4 +1,5 @@
 import logging
+import asyncio
 from b2sdk.v2 import *
 from fastapi import HTTPException
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -21,65 +22,67 @@ class IndexingService(IndexingServiceInterface):
         # Initialize text splitter
         self.text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
 
+    async def _process_file(self, file_info, total_files, current_index):
+        logger.info(f"Processing file {current_index}/{total_files}: {file_info.file_name}")
+        try:
+            # 1. Download PDF from bucket (in thread)
+            logger.debug(f"Downloading {file_info.file_name}...")
+            pdf_bytes = await asyncio.to_thread(self.bucket_service.download_file_by_name, file_info.file_name)
+            logger.debug(f"Downloaded {len(pdf_bytes)} bytes.")
+
+            # 2. Extract text from PDF (with OCR fallback)
+            logger.debug(f"Extracting text from {file_info.file_name}...")
+            extracted_text = await self.parse_file_service.extract_text_from_pdf(pdf_bytes)
+
+            if extracted_text == "__SCANNED_DOCUMENT__":
+                logger.info(f"{file_info.file_name} is a scanned document, using OCR.")
+                extracted_text = await self.parse_file_service.process_with_ocr(pdf_bytes)
+
+            logger.debug(f"Extracted {len(extracted_text)} characters.")
+
+            # 3. Chunk the extracted text (in thread)
+            logger.debug(f"Chunking text for {file_info.file_name}...")
+            chunks = await asyncio.to_thread(self.text_splitter.split_text, extracted_text)
+            logger.debug(f"Created {len(chunks)} chunks.")
+
+            # 4. Vectorize and store the chunks (in thread)
+            logger.debug(f"Vectorizing and storing chunks for {file_info.file_name}...")
+            ids = [f"{file_info.file_name}-{i}" for i, _ in enumerate(chunks)]
+            await asyncio.to_thread(
+                self.vector_store_service.add_texts,
+                texts=chunks,
+                metadatas=[{"source": file_info.file_name}] * len(chunks),
+                ids=ids
+            )
+
+            logger.info(f"Successfully processed and stored {file_info.file_name}.")
+            return {"status": "success", "file_name": file_info.file_name}
+        except Exception as e:
+            error_message = f"Failed to process file {file_info.file_name}: {e}"
+            logger.error(error_message)
+            return {"status": "failed", "file_name": file_info.file_name, "error": str(e)}
+
     async def process_bucket(self) -> dict:
         logger.info("Starting bucket processing...")
-        processed_files_count = 0
-        failed_files = []
 
         # List all files in the bucket
-        all_files = self.bucket_service.list_files()
+        all_files = [file_info for file_info, _ in self.bucket_service.list_files() if file_info.file_name.lower().endswith('.pdf')]
         total_files = len(all_files)
-        logger.info(f"Found {total_files} files in the bucket.")
+        logger.info(f"Found {total_files} PDF files in the bucket.")
 
-        for i, (file_info, _) in enumerate(all_files):
-            if not file_info.file_name.lower().endswith('.pdf'):
-                continue
+        tasks = []
+        for i, file_info in enumerate(all_files):
+            tasks.append(self._process_file(file_info, total_files, i + 1))
 
-            logger.info(f"Processing file {i+1}/{total_files}: {file_info.file_name}")
+        results = await asyncio.gather(*tasks)
 
-            try:
-                # 1. Download PDF from bucket
-                logger.debug(f"Downloading {file_info.file_name}...")
-                pdf_bytes = self.bucket_service.download_file_by_name(file_info.file_name)
-                logger.debug(f"Type of pdf_bytes: {type(pdf_bytes)}")
-                logger.debug(f"Downloaded {len(pdf_bytes)} bytes.")
-
-                # 2. Extract text from PDF (with OCR fallback)
-                logger.debug(f"Extracting text from {file_info.file_name}...")
-                extracted_text = await self.parse_file_service.extract_text_from_pdf(pdf_bytes)
-
-                if extracted_text == "__SCANNED_DOCUMENT__":
-                    logger.info(f"{file_info.file_name} is a scanned document, using OCR.")
-                    extracted_text = await self.parse_file_service.process_with_ocr(pdf_bytes)
-
-                logger.debug(f"Extracted {len(extracted_text)} characters.")
-
-                # 3. Chunk the extracted text
-                logger.debug(f"Chunking text for {file_info.file_name}...")
-                chunks = self.text_splitter.split_text(extracted_text)
-                logger.debug(f"Created {len(chunks)} chunks.")
-
-                # 4. Vectorize and store the chunks
-                logger.debug(f"Vectorizing and storing chunks for {file_info.file_name}...")
-                ids = [f"{file_info.file_name}-{i}" for i, _ in enumerate(chunks)]
-                self.vector_store_service.add_texts(
-                    texts=chunks,
-                    metadatas=[{"source": file_info.file_name}] * len(chunks),
-                    ids=ids
-                )
-
-                logger.info(f"Successfully processed and stored {file_info.file_name}.")
-                processed_files_count += 1
-
-            except Exception as e:
-                error_message = f"Failed to process file {file_info.file_name}: {e}"
-                logger.error(error_message)
-                failed_files.append({"file": file_info.file_name, "error": str(e)})
+        processed_files_count = sum(1 for r in results if r['status'] == 'success')
+        failed_files = [r for r in results if r['status'] == 'failed']
 
         logger.info("Bucket processing finished.")
         return {
             "message": "Bucket processing completed.",
-            "total_files_in_bucket": total_files,
+            "total_pdf_files_in_bucket": total_files,
             "processed_pdf_files": processed_files_count,
             "failed_files": failed_files
         }
