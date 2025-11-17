@@ -6,7 +6,6 @@ from fastapi import UploadFile, HTTPException
 from typing import Dict, Any, List
 from langchain_chroma import Chroma
 from langchain_community.embeddings import SentenceTransformerEmbeddings
-from langchain_text_splitters import RecursiveCharacterTextSplitter
 from app.core.config import config
 from app.core.constants import ProcessingType, AIService, OCRService, PDFToImageService
 from app.factories.ocr_service_factory import OCRServiceFactory
@@ -16,6 +15,9 @@ from app.factories.pdf_to_image_service_factory import PDFToImageServiceFactory
 from app.interfaces.parse_file_service_interface import ParseFileServiceInterface
 
 logger = logging.getLogger(__name__)
+
+# Constants
+PAGE_LOG_INTERVAL = 10
 
 class ParseFileService(ParseFileServiceInterface):
     def __init__(self, ollama_base_url: str = "http://llm_host_service:11434", groq_api_key: str = None):
@@ -41,17 +43,15 @@ class ParseFileService(ParseFileServiceInterface):
             # TODO: DELETE
             logger.info(f"ParseFileService - opened stream of bytes")
 
-            extracted_text = ""
+            pages_text = []
             # Process page by page to manage memory
             for page_num, page in enumerate(doc):
                 page_text = page.get_text("text")
-                extracted_text += page_text + "\n"
-                # Clear page resources
-                page.cleanup()
-                if page_num % 10 == 0:
+                pages_text.append(page_text)
+                if page_num % PAGE_LOG_INTERVAL == 0:
                     logger.debug(f"Processed {page_num + 1} pages")
             
-            extracted_text = extracted_text.strip()
+            extracted_text = "\n".join(pages_text).strip()
             doc.close()
 
             # TODO: DELETE
@@ -202,7 +202,7 @@ class ParseFileService(ParseFileServiceInterface):
 
             results = ""
             async for chunk in self._llm_service.generate_completion(model=model, prompt=custom_prompt, stream=False):
-                results += chunk
+                results += chunk["response"]
 
             cleaned_text = re.sub(r"^```json\n|\n```$", "", results).strip()
 
