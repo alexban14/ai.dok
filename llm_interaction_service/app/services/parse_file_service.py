@@ -5,8 +5,8 @@ import fitz
 from fastapi import UploadFile, HTTPException
 from typing import Dict, Any, List
 from langchain_chroma import Chroma
-from langchain.embeddings import SentenceTransformerEmbeddings
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_community.embeddings import SentenceTransformerEmbeddings
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 from app.core.config import config
 from app.core.constants import ProcessingType, AIService, OCRService, PDFToImageService
 from app.factories.ocr_service_factory import OCRServiceFactory
@@ -41,8 +41,18 @@ class ParseFileService(ParseFileServiceInterface):
             # TODO: DELETE
             logger.info(f"ParseFileService - opened stream of bytes")
 
-            extracted_text = "\n".join([page.get_text("text") for page in doc])
+            extracted_text = ""
+            # Process page by page to manage memory
+            for page_num, page in enumerate(doc):
+                page_text = page.get_text("text")
+                extracted_text += page_text + "\n"
+                # Clear page resources
+                page.cleanup()
+                if page_num % 10 == 0:
+                    logger.debug(f"Processed {page_num + 1} pages")
+            
             extracted_text = extracted_text.strip()
+            doc.close()
 
             # TODO: DELETE
             logger.info(f"ParseFileService - Length of extracted text: {len(extracted_text)}")
@@ -132,7 +142,7 @@ class ParseFileService(ParseFileServiceInterface):
             ):
                 result += chunk["response"]
 
-            cleaned_text = re.sub(r"""^```json\n|\n"'```$""""", "", result).strip()
+            cleaned_text = re.sub(r"^```json\n|\n```$", "", result).strip()
 
             try:
                 return json.loads(cleaned_text)
@@ -174,7 +184,7 @@ class ParseFileService(ParseFileServiceInterface):
             async for chunk in self._llm_service.generate_completion(model=model, prompt=parse_prompt, stream=False):
                 result += chunk["response"]
 
-            cleaned_text = re.sub(r"""^```json\n|\n"'```$""""", "", result).strip()
+            cleaned_text = re.sub(r"^```json\n|\n```$", "", result).strip()
 
             try:
                 return json.loads(cleaned_text)
@@ -194,7 +204,7 @@ class ParseFileService(ParseFileServiceInterface):
             async for chunk in self._llm_service.generate_completion(model=model, prompt=custom_prompt, stream=False):
                 results += chunk
 
-            cleaned_text = re.sub(r"""^```json\n|\n"'```$""""", "", results).strip()
+            cleaned_text = re.sub(r"^```json\n|\n```$", "", results).strip()
 
             try:
                 return json.loads(cleaned_text)
