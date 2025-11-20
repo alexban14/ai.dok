@@ -17,6 +17,25 @@ class Config(BaseSettings):
     chroma_db_host: str = Field(..., alias='CHROMA_DB_HOST')
     chroma_db_port: int = Field(..., alias='CHROMA_DB_PORT')
 
+    # Hybrid Retrieval Configuration
+    embedding_model: str = Field(default='BAAI/bge-large-en-v1.5', alias='EMBEDDING_MODEL')
+    reranker_model: str = Field(default='BAAI/bge-reranker-large', alias='RERANKER_MODEL')
+    retrieval_strategy: str = Field(default='hybrid', alias='RETRIEVAL_STRATEGY')
+    
+    # BM25 Parameters
+    bm25_k1: float = Field(default=1.5, alias='BM25_K1')
+    bm25_b: float = Field(default=0.75, alias='BM25_B')
+    
+    # Hybrid Retrieval Parameters
+    hybrid_alpha: float = Field(default=0.5, alias='HYBRID_ALPHA')  # Weight for vector vs BM25
+    retrieval_top_k: int = Field(default=20, alias='RETRIEVAL_TOP_K')  # Initial retrieval count
+    reranker_top_k: int = Field(default=5, alias='RERANKER_TOP_K')  # Final results after reranking
+    
+    # RCP Section Chunking
+    chunk_by_section: bool = Field(default=True, alias='CHUNK_BY_SECTION')
+    chunk_size: int = Field(default=512, alias='CHUNK_SIZE')
+    chunk_overlap: int = Field(default=100, alias='CHUNK_OVERLAP')
+
     client_ids: List[int] = Field(..., alias='CLIENT_IDS')
     api_access_tokens: List[str] = Field(..., alias='API_ACCESS_TOKENS')
 

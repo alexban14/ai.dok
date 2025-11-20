@@ -36,3 +36,20 @@ class VectorStoreProvider(str, Enum):
 
 class ChromaCollection(str, Enum):
     RCP_DOCUMENTS = "rcp_documents"
+    RCP_DOCUMENTS_V2 = "rcp_documents_v2"
+
+class RetrievalStrategy(str, Enum):
+    """Enum for retrieval strategies"""
+    VECTOR_ONLY = "vector_only"
+    HYBRID = "hybrid"
+    BM25_ONLY = "bm25_only"
+
+class EmbeddingModel(str, Enum):
+    """Enum for embedding models"""
+    MINILM_L6_V2 = "all-MiniLM-L6-v2"
+    BGE_LARGE_EN_V1_5 = "BAAI/bge-large-en-v1.5"
+
+class RerankerModel(str, Enum):
+    """Enum for reranker models"""
+    BGE_RERANKER_LARGE = "BAAI/bge-reranker-large"
+    BGE_RERANKER_BASE = "BAAI/bge-reranker-base"

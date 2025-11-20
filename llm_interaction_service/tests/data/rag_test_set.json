@@ -1,0 +1,409 @@
+{
+  "description": "Test set for evaluating RAG system on RCP medical documents. Contains queries with ground truth answers and source sections.",
+  "total_queries": 50,
+  "queries": [
+    {
+      "id": 1,
+      "query": "Care sunt indicațiile terapeutice pentru 5-Fluorouracil?",
+      "ground_truth_answer": "5-Fluorouracil poate fi utilizat singur sau în asociere pentru tratamentul cancerului de sân și carcinomul colorectal. În plus s-a raportat eficacitate la pacienții cu cancer gastric, carcinom pancreatic, carcinoame epidermoide ale sferei ORL și esofagiene.",
+      "expected_section": "4.1",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "indicatii"
+    },
+    {
+      "id": 2,
+      "query": "Ce contraindicații are 5-Fluorouracil?",
+      "ground_truth_answer": "Nu trebuie utilizat în caz de: hipersensibilitate la fluorouracil, mielosupresie, modificări semnificative ale numărului elementelor sanguine, disfuncții hepatice severe, afecțiuni infecțioase severe, pacienți cu afecțiuni psihice, în timpul sarcinii și alăptării.",
+      "expected_section": "4.3",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "contraindicatii"
+    },
+    {
+      "id": 3,
+      "query": "Care este doza recomandată de 5-Fluorouracil pentru carcinom colorectal?",
+      "ground_truth_answer": "Doza zilnică este de 15 mg/kg corp (600 mg/m²), dar nu mai mult de 1 g pe perfuzie, diluată în 300-500 ml de soluție de glucoză 5% sau soluție de clorură de sodiu și se administrează în cursul a 4 ore. Alternativ, 12 mg/kg corp (480 mg/m²) pot fi administrate zilnic, 3 zile prin injecții intravenoase.",
+      "expected_section": "4.2",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "dozaj"
+    },
+    {
+      "id": 4,
+      "query": "Ce reacții adverse poate cauza 5-Fluorouracil?",
+      "ground_truth_answer": "Reacții adverse foarte frecvente includ: mielosupresie, neutropenie, trombocitopenie, leucopenie, imunosupresie, hiperuricemie, modificări ECG pentru ischemie, bronhospasm, mucozită (stomatită, faringită, esofagită), anorexie, diaree, greață, vărsături, alopecie, sindrom mână-picior, epuizare, astenie, febră.",
+      "expected_section": "4.8",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "reactii_adverse"
+    },
+    {
+      "id": 5,
+      "query": "Poate fi administrat 5-Fluorouracil în timpul sarcinii?",
+      "ground_truth_answer": "Nu, fluorouracilul nu trebuie utilizat în timpul sarcinii. Femeile cu potențial fertil trebuie să se asigure că utilizează măsuri contraceptive eficace. Dacă în timpul tratamentului sarcina este diagnosticată trebuie luată în considerare posibilitatea de consiliere genetică.",
+      "expected_section": "4.6",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "sarcina_alaptare"
+    },
+    {
+      "id": 6,
+      "query": "Ce interacțiuni medicamentoase are 5-Fluorouracil cu brivudina?",
+      "ground_truth_answer": "Brivudina și analogii acesteia sunt inhibitori puternici ai enzimei DPD care degradează 5-FU. Nu trebuie utilizat concomitent cu brivudină. Trebuie menținut un interval de cel puțin 4 săptămâni între administrarea de 5-FU și brivudină.",
+      "expected_section": "4.5",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "interactiuni"
+    },
+    {
+      "id": 7,
+      "query": "Care este mecanismul de acțiune al 5-Fluorouracil?",
+      "ground_truth_answer": "5-Fluorouracil este un antimetabolit și ca antagonist pirimidinic, inhibă diviziunea celulelor prin interferarea sintezei de ADN. Nu are activitate antineoplazică proprie. Această activitate apare în organism după conversia enzimatică în forma fosforilată de 5-Fluorouridină și 5-Fluorodeoxiuridină.",
+      "expected_section": "5.1",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "mecanism_actiune"
+    },
+    {
+      "id": 8,
+      "query": "Ce precauții trebuie luate la administrarea 5-Fluorouracil?",
+      "ground_truth_answer": "Se recomandă monitorizarea zilnică a trombocitelor și leucocitelor și întreruperea tratamentului dacă trombocitele scad sub 100000/mm³ sau leucocitele sub 3000/mm³. Trebuie menținut un interval de cel puțin 4 săptămâni între brivudină și 5-FU. Se recomandă prudență la pacienții cu boli cardiace.",
+      "expected_section": "4.4",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "atentionari"
+    },
+    {
+      "id": 9,
+      "query": "Ce se întâmplă în caz de supradozaj cu 5-Fluorouracil?",
+      "ground_truth_answer": "Simptomele intoxicației includ: greață, vărsături, diaree, mucozită severă, ulcerații și hemoragii în tractul gastro-intestinal, mielosupresie (trombocitopenie, leucopenie, agranulozitoză). Nu există antidot specific. Administrarea trebuie întreruptă imediat și trebuie inițiate măsuri simptomatice. Mielosupresia severă trebuie tratată în spital.",
+      "expected_section": "4.9",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "supradozaj"
+    },
+    {
+      "id": 10,
+      "query": "Care este timpul de înjumătățire al 5-Fluorouracil?",
+      "ground_truth_answer": "Timpul plasmatic de înjumătățire prin eliminare este în medie de aproximativ 10 până la 20 minute și este dependent de doză. Nu a fost detectat medicament intact în plasmă după trei ore de la administrare pe cale intravenoasă.",
+      "expected_section": "5.2",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "farmacocinetica"
+    },
+    {
+      "id": 11,
+      "query": "Cum se păstrează 5-Fluorouracil?",
+      "ground_truth_answer": "A se păstra la temperaturi sub 25°C, în ambalajul original. A nu se păstra la frigider sau congela. A se păstra recipientul în ambalajul exterior, pentru a fi protejat de lumină. Extrageți soluția din flacon imediat înainte de utilizare.",
+      "expected_section": "6.4",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "pastrare"
+    },
+    {
+      "id": 12,
+      "query": "Ce conține 5-Fluorouracil ca excipienți?",
+      "ground_truth_answer": "Excipienți: hidroxid de sodiu și apă pentru preparate injectabile. Acest medicament conține sodiu, <1 mmol (23 mg) pe doză.",
+      "expected_section": "6.1",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "compozitie"
+    },
+    {
+      "id": 13,
+      "query": "Ce efecte are 5-Fluorouracil asupra capacității de a conduce?",
+      "ground_truth_answer": "În funcție de sensibilitatea individuală, capacitatea de a conduce vehicule sau de a folosi utilaje a pacienților poate fi afectată.",
+      "expected_section": "4.7",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "condus"
+    },
+    {
+      "id": 14,
+      "query": "Care este forma farmaceutică a 5-Fluorouracil Ebewe?",
+      "ground_truth_answer": "Concentrat pentru soluție injectabilă/perfuzabilă. Soluție limpede, incoloră.",
+      "expected_section": "3",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "forma_farmaceutica"
+    },
+    {
+      "id": 15,
+      "query": "Poate fi folosit 5-Fluorouracil pentru cancer de sân?",
+      "ground_truth_answer": "Da, pentru tratamentul cancerului de sân, 5-Fluorouracil poate fi utilizat în asocieri, de ex. cu metotrexat și ciclofosfamidă sau cu doxorubicină și ciclofosfamidă. În această schemă, 10-15 mg/Kg (400-600 m²) se administrează intravenos în zilele 1 și 8 din cele 28 de zile de cură.",
+      "expected_section": "4.2",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "indicatii"
+    },
+    {
+      "id": 16,
+      "query": "Ce monitorizare se recomandă în timpul tratamentului cu 5-Fluorouracil?",
+      "ground_truth_answer": "Se recomandă următoarele examinări: monitorizarea zilnică a cavității bucale și faringelui pentru modificările mucoasei, hemoleucograma inclusiv diferențială și numărul de trombocite înainte de fiecare administrare, valorile de retenție, valorile hepatice.",
+      "expected_section": "4.4",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "monitorizare"
+    },
+    {
+      "id": 17,
+      "query": "Ce interacțiune are 5-Fluorouracil cu warfarină?",
+      "ground_truth_answer": "Au fost observate cazuri izolate de scădere a valorii Quick la pacienții tratați cu warfarină concomitent cu fluorouracil în monoterapie sau în asociere cu levamisol.",
+      "expected_section": "4.5",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "interactiuni"
+    },
+    {
+      "id": 18,
+      "query": "Ce este sindromul mână-picior asociat cu 5-Fluorouracil?",
+      "ground_truth_answer": "Sindromul mână-picior asociat cu eritem, tumefiere, algie și descuamarea tegumentelor de la nivelul palmelor și plantar. Este foarte frecvent după perfuzia i.v. continuă și frecvent după injectarea i.v. în bolus.",
+      "expected_section": "4.8",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "reactii_adverse"
+    },
+    {
+      "id": 19,
+      "query": "Cum se elimină 5-Fluorouracil din organism?",
+      "ground_truth_answer": "5-Fluorouracilul este eliminat în principal (60-80%) sub formă de bioxid de carbon prin plămâni. Secundar, este eliminat pe cale renală ca medicament nemodificat (7-20%), aproximativ 90% din acesta în prima oră. Clearance-ul renal este de aproximativ 170-180 ml/min.",
+      "expected_section": "5.2",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "farmacocinetica"
+    },
+    {
+      "id": 20,
+      "query": "Ce concentrație are 5-Fluorouracil Ebewe?",
+      "ground_truth_answer": "Un ml concentrat pentru soluție injectabilă/perfuzabilă conține 50 mg fluorouracil.",
+      "expected_section": "2",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "compozitie"
+    },
+    {
+      "id": 21,
+      "query": "5-Fluorouracil poate fi folosit la copii?",
+      "ground_truth_answer": "Nu sunt recomandări privind dozele pentru tratament la copii. Nu este disponibilă suficientă experiență cu privire la eficacitatea și siguranța fluorouracilului la copii.",
+      "expected_section": "4.4",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "populatii_speciale"
+    },
+    {
+      "id": 22,
+      "query": "Ce reacții cardiotoxice poate provoca 5-Fluorouracil?",
+      "ground_truth_answer": "Modificări tipice ale ECG pentru ischemie, angină pectorală, aritmii, infarct miocardic, ischemie miocardică, miocardită, insuficiență cardiacă, cardiomiopatie dilatativă și șoc cardiogen. Cele mai frecvente apar în timpul sau la câteva ore după primul ciclu terapeutic.",
+      "expected_section": "4.8",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "reactii_adverse"
+    },
+    {
+      "id": 23,
+      "query": "Cu ce se diluează 5-Fluorouracil înainte de administrare?",
+      "ground_truth_answer": "5-Fluorouracil trebuie diluat cu soluție de clorură de sodiu 0,9% sau cu soluție de glucoză 5%.",
+      "expected_section": "6.2",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "preparare"
+    },
+    {
+      "id": 24,
+      "query": "Ce este enzima DPD și ce rol are în metabolismul 5-Fluorouracil?",
+      "ground_truth_answer": "Enzima dihidropiridin dehidrogenază (DPD) are un rol important în degradarea 5-FU. La pacienții cu deficit de DPD, dozele uzuale de fluorouracil determină creșterea frecvenței evenimentelor adverse. Pacienții cu deficit de DPD nu trebuie tratați cu fluorouracil.",
+      "expected_section": "4.3",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "mecanism_actiune"
+    },
+    {
+      "id": 25,
+      "query": "Ce trebuie făcut dacă un pacient gravidă manipulează 5-Fluorouracil?",
+      "ground_truth_answer": "Femeile gravide nu trebuie să manipuleze 5-Fluorouracil. Trebuie purtat îmbrăcămintea de protecție, mănuși și mască. În caz de contact cu pielea, trebuie spălată zona cu multă apă și săpun.",
+      "expected_section": "6.6",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "manipulare"
+    },
+    {
+      "id": 26,
+      "query": "Ce efecte are 5-Fluorouracil asupra fertilității masculine?",
+      "ground_truth_answer": "La șobolan induce aberații cromozomiale la nivelul spermatozoidului și infertilitate temporară. Bărbaților li se recomandă să nu procreeze în timpul tratamentului și până la 6 luni după. Trebuie solicitat sfatul cu privire la conservarea spermei înainte de inițierea tratamentului deoarece există posibilitatea de infertilitate ireversibilă.",
+      "expected_section": "4.6",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "fertilitate"
+    },
+    {
+      "id": 27,
+      "query": "Poate apărea mucozită la pacienții tratați cu 5-Fluorouracil?",
+      "ground_truth_answer": "Da, mucozita (stomatită, faringită, esofagită, proctită) este o reacție adversă foarte frecventă gastro-intestinală cu potențial letal. În cazul perfuziei i.v. continue, stomatita este mai dependentă de doză decât mielosupresia.",
+      "expected_section": "4.8",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "reactii_adverse"
+    },
+    {
+      "id": 28,
+      "query": "Ce interacțiune are 5-Fluorouracil cu folinatul de calciu?",
+      "ground_truth_answer": "Folinatul de calciu crește efectul fluorouracilului. Ca urmare a acestei interacțiuni clinice poate să apară diareea severă, parțial letală. Astfel de decese au fost raportate mai ales în urma unei scheme de administrare intravenoasă in bolus cu 600 mg/m² suprafață corporală de fluorouracil o dată pe săptămână și folinat de calciu.",
+      "expected_section": "4.5",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "interactiuni"
+    },
+    {
+      "id": 29,
+      "query": "Ce tulburări hematologice poate cauza 5-Fluorouracil?",
+      "ground_truth_answer": "Foarte frecvente: mielosupresie, neutropenie și trombocitopenie (ambele de intensitate ușoară până la severă), leucopenie, agranulocitoză, anemie, epistaxis și pancitopenie. Gradul de mielosupresie depinde de modul de administrare și doză. Neutropenia apare după fiecare ciclu terapeutic (Nadir: zilele 9-14).",
+      "expected_section": "4.8",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "reactii_adverse"
+    },
+    {
+      "id": 30,
+      "query": "Cât timp este stabilă soluția de 5-Fluorouracil după diluare?",
+      "ground_truth_answer": "Perfuzia de soluție 5-Fluorouracil în glucoză 5% și în clorură de sodiu 0,9% cu o concentrație de 0,35 și 15,0 mg/ml rămâne stabilă timp de 28 zile la frigider, la temperatura camerei sub protecție de lumină. Din punct de vedere microbiologic perfuziile nu trebuie păstrate mai mult de 24 de ore cu excepția situațiilor în care diluarea s-a făcut în condiții de asepsie controlate.",
+      "expected_section": "6.2",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "stabilitate"
+    },
+    {
+      "id": 31,
+      "query": "medicament cancer colon",
+      "ground_truth_keywords": ["5-Fluorouracil", "carcinom colorectal", "cancer"],
+      "expected_section": "4.1",
+      "query_type": "keyword_search"
+    },
+    {
+      "id": 32,
+      "query": "COX-1 COX-2 mecanism",
+      "ground_truth_keywords": ["mecanism", "acțiune", "inhibitor"],
+      "expected_section": "5.1",
+      "query_type": "keyword_search"
+    },
+    {
+      "id": 33,
+      "query": "doză maximă zi",
+      "ground_truth_keywords": ["1 gram", "1000 mg", "doză totală zilnică"],
+      "expected_section": "4.2",
+      "query_type": "keyword_search"
+    },
+    {
+      "id": 34,
+      "query": "diabet hipertensiune contraindicații",
+      "ground_truth_keywords": ["contraindicații", "precauții"],
+      "expected_section": "4.3",
+      "query_type": "keyword_search"
+    },
+    {
+      "id": 35,
+      "query": "leucocite trombocite valori normale",
+      "ground_truth_keywords": ["leucocite", "3000/mm3", "trombocite", "100000/mm3"],
+      "expected_section": "4.2",
+      "query_type": "keyword_search"
+    },
+    {
+      "id": 36,
+      "query": "Care este doza de 5-Fluorouracil pentru cancer pancreatic?",
+      "ground_truth_answer": "S-a raportat eficacitate la pacienții cu carcinom pancreatic, dar selectarea dozelor corespunzătoare și schema de tratament depind de starea pacientului și dacă 5-Fluorouracilul este administrat singur sau asociat cu altă terapie.",
+      "expected_section": "4.1",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "dozaj"
+    },
+    {
+      "id": 37,
+      "query": "Este recomandat 5-Fluorouracil pentru persoanele vârstnice?",
+      "ground_truth_answer": "La vârstnici, 5-Fluorouracil se utilizează la fel ca la adulții tineri.",
+      "expected_section": "4.2",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "populatii_speciale"
+    },
+    {
+      "id": 38,
+      "query": "Ce volum de distribuție are 5-Fluorouracil?",
+      "ground_truth_answer": "S-a demonstrat că volumul de distribuție al substanței este de 0,12 l/kg greutate corporală și legarea de proteinele plasmatice este de aproximativ 10%.",
+      "expected_section": "5.2",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "farmacocinetica"
+    },
+    {
+      "id": 39,
+      "query": "Poate fi administrat 5-Fluorouracil pe cale orală?",
+      "ground_truth_answer": "Absorbția după administrarea pe cale orală se face cu diferențe mari și biodisponibilitatea este între 0% și 80%. 5-Fluorouracil Ebewe se administrează numai intravenos sau intraarterial.",
+      "expected_section": "5.2",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "mod_administrare"
+    },
+    {
+      "id": 40,
+      "query": "Ce tulburări oculare poate provoca 5-Fluorouracil?",
+      "ground_truth_answer": "Mai puțin frecvente: sinteză lacrimală excesivă, vedere încețoșată, tulburări de motilitate oculară, nevrită optică, diplopie, scăderea acuității vizuale, fotofobie, conjunctivită, blefarită, ectropion din cauza cicatricelor, fibroze lacrimale.",
+      "expected_section": "4.8",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "reactii_adverse"
+    },
+    {
+      "id": 41,
+      "query": "Ce grupe farmacoterapeutice include 5-Fluorouracil?",
+      "ground_truth_answer": "Grupa farmacoterapeutică: antineoplazice, antimetaboliți, analogi ai bazelor pirimidinice, codul ATC: L01BC02.",
+      "expected_section": "5.1",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "clasificare"
+    },
+    {
+      "id": 42,
+      "query": "Se poate forma precipitat în soluția de 5-Fluorouracil?",
+      "ground_truth_answer": "Da, dacă s-a format precipitat ca rezultat al expunerii la temperaturi joase, se poate redizolva prin încălzire la temperatura de 60°C însoțindu-se de agitarea viguroasă a recipientului. Soluția trebuie răcită apoi la temperatura corpului înainte de a fi utilizată.",
+      "expected_section": "6.4",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "pastrare"
+    },
+    {
+      "id": 43,
+      "query": "Ce este tratamentul de întreținere cu 5-Fluorouracil?",
+      "ground_truth_answer": "Tratamentul de întreținere constă în 5-10 mg/kg (200-400 mg/m²) prin injecții intravenoase o dată pe săptămână. Efectele secundare toxice trebuie să dispară înainte de începerea terapiei de întreținere.",
+      "expected_section": "4.2",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "dozaj"
+    },
+    {
+      "id": 44,
+      "query": "Pot apărea tulburări ale sistemului nervos cu 5-Fluorouracil?",
+      "ground_truth_answer": "Frecvente: nistagmus, cefalee, vertij, simptome parkinsoniene, semne corticospinale și euforie. Foarte rare: leukoencefalopatie cu simptome precum ataxie, tulburări de vorbire, confuzie, tulburări de orientare, miastenie, afazie, convulsii sau comă.",
+      "expected_section": "4.8",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "reactii_adverse"
+    },
+    {
+      "id": 45,
+      "query": "Ce interacțiune are 5-Fluorouracil cu cimetidina?",
+      "ground_truth_answer": "Cimetidina, metronidazolul și interferonii pot crește concentrația plasmatică de fluorouracil. Acest lucru poate potența efectele toxice ale fluorouracilului.",
+      "expected_section": "4.5",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "interactiuni"
+    },
+    {
+      "id": 46,
+      "query": "Ce este perfuzia intraarterială cu 5-Fluorouracil?",
+      "ground_truth_answer": "O doză zilnică de 5-7,5 mg/kg (200-300 mg/m²) poate fi administrată în 24 de ore pentru tratamentul tumorilor primare sau metastazelor prin perfuzii intraarteriale.",
+      "expected_section": "4.2",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "mod_administrare"
+    },
+    {
+      "id": 47,
+      "query": "Ce valabilitate are 5-Fluorouracil Ebewe?",
+      "ground_truth_answer": "Perioada de valabilitate este de 2 ani.",
+      "expected_section": "6.3",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "valabilitate"
+    },
+    {
+      "id": 48,
+      "query": "Există risc de tromboembolism cu 5-Fluorouracil?",
+      "ground_truth_answer": "Au fost observate frecvente efecte de ischemie cerebrală, intestinală și periferică, sindrom Raynaud, tromboembolism, tromboflebită. Pacienții cu carcinom mamar care primesc tratament asociat cu ciclofosfamidă, metotrexat, fluorouracil și tamoxifen au prezentat un risc agravat de apariție a evenimentelor tromboembolice.",
+      "expected_section": "4.8",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "reactii_adverse"
+    },
+    {
+      "id": 49,
+      "query": "Trebuie ajustate dozele la pacienți cu insuficiență renală?",
+      "ground_truth_answer": "Este recomandabilă reducerea dozelor la pacienții cu insuficiență hepatică sau renală. Dacă funcționarea rinichiului este redusă, substanța se elimină lent.",
+      "expected_section": "4.2",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "ajustare_doza"
+    },
+    {
+      "id": 50,
+      "query": "Cum se tratează mielosupresia severă cauzată de 5-Fluorouracil?",
+      "ground_truth_answer": "Mielosupresia severă trebuie tratată în condiții de spitalizare. Aceasta implică – dacă este necesar – înlocuirea elementelor sanguine care lipsesc și tratamentul cu antibiotice. Poate fi necesar transferul pacientului într-o cameră aseptică. Trebuie efectuată monitorizarea hematologică timp de până la 4 săptămâni după supradozaj.",
+      "expected_section": "4.9",
+      "expected_drug": "5-Fluorouracil Ebewe",
+      "query_type": "tratament"
+    }
+  ],
+  "evaluation_metrics": {
+    "precision_at_5": "Percentage of retrieved documents in top-5 that are relevant",
+    "recall_at_5": "Percentage of relevant documents retrieved in top-5",
+    "mrr": "Mean Reciprocal Rank - position of first relevant document",
+    "hallucination_rate": "Percentage of answers containing information not in context",
+    "section_accuracy": "Percentage of queries where correct RCP section was retrieved",
+    "citation_accuracy": "Percentage of answers correctly citing source document"
+  }
+}

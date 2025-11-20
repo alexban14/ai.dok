@@ -29,8 +29,20 @@ services:
     volumes:
       - "./llm_interaction_service/app:/app/app"
       - llm_interaction_data:/home/app/.paddleocr
+      - bm25_indexes:/app/bm25_indexes
     env_file:
       - ./llm_interaction_service/.env
+    # Resource limits to prevent OOM killer
+    deploy:
+      resources:
+        limits:
+          memory: 8G
+          cpus: '4.0'
+        reservations:
+          memory: 4G
+          cpus: '2.0'
+    # Shared memory for PyTorch/transformers
+    shm_size: '2gb'
     networks:
       - ai_dok_network
 
@@ -46,6 +58,7 @@ services:
 volumes:
   llm_interaction_data:
   vector_data:
+  bm25_indexes:
 
 networks:
   ai_dok_network:

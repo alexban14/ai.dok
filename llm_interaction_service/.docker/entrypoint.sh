@@ -8,15 +8,17 @@ if [ "$ENV" = "development" ]; then
   exec uvicorn app.main:api --host 0.0.0.0 --port 8000 --reload --timeout-keep-alive 300 --timeout-graceful-shutdown 30
 else
   echo "Running in production mode..."
-  # Increased timeout to 300s (5 minutes) for file processing
-  # Single worker to avoid memory issues with PDF processing
-  # Grace period for graceful shutdown
+  # Increased timeout to 7200s (2 hours) for processing 6000 files
+  # Single worker to avoid memory issues with PDF processing and large models
+  # Keep-alive increased for long-running background tasks
   exec gunicorn -k uvicorn.workers.UvicornWorker \
     -b 0.0.0.0:8000 \
     --workers 1 \
-    --timeout 300 \
-    --graceful-timeout 30 \
-    --max-requests 100 \
-    --max-requests-jitter 10 \
+    --timeout 7200 \
+    --graceful-timeout 120 \
+    --keep-alive 600 \
+    --max-requests 50 \
+    --max-requests-jitter 5 \
+    --worker-tmp-dir /dev/shm \
     app.main:api
 fi
